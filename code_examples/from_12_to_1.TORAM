@@ -1,0 +1,11 @@
+(def main (i) (_
+	(@load 12)
+	(@store i)
+	(while i (_
+		(@write i)
+		(@load i)
+		(@sub 1)
+		(@store i)
+	))
+))
+(main)

@@ -1,0 +1,99 @@
+(def - (a b) (_
+	(@load a)
+	(@sub b)
+	(@store return)
+))
+
+(def + (a b) (_
+	(@load a)
+	(@add b)
+	(@store return)
+))
+
+(def / (a b) (_
+	(@load a)
+	(@div b)
+	(@store return)
+))
+
+(def * (a b) (_
+	(@load a)
+	(@mult b)
+	(@store return)
+))
+
+(def = (a b) (_
+	(@load b)
+	(@store *a)
+))
+
+(def % (a b)
+	(= &return (- a (* b (/ a b))))
+)
+
+(def not (x) (_
+	(= &return 1)
+	(if x 
+		(= &return 0)
+	)
+))
+
+(def < (a b) (_
+	(@load 1)
+	(@store return)
+	(ifngtz (- b a) (_
+		(@load 0)
+		(@store return)
+	))
+))
+
+(def <= (a b) (_
+	(= &return 0)
+	(ifngtz (- a b) 
+		(= &return 1)
+	)
+))
+
+(def swap (a b c) (_
+	(= &c *a)
+	(= a *b)
+	(= b c)
+))
+
+(def max (a b) (_
+	(= &return a)
+	(if (< a b) (= &return b))
+))
+
+(def read1 ()
+	(@read return)
+)
+
+(def at (x) (_
+	(= &return *x)
+))
+
+(def of (t i) (_
+	(= &return (at (+ t i)))
+))
+
+(def main (n i (a 50009)) (_
+	(// input: length of the array then the array
+		output: prefix sums of the array)
+	(@read n)
+	(= &i 1)
+	(while (<= i n) (_
+		(= (+ &a i) (read1))
+		(= &i (+ i 1))
+	))
+
+	(= &a 0)
+
+	(= &i 1)
+	(while (<= i n) (_
+		(= (+ &a i) (+ (of &a i) (of &a (- i 1))))
+		(@write (of &a i))
+		(= &i (+ i 1))
+	))
+))
+(main)

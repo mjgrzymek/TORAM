@@ -1,0 +1,75 @@
+(def - (a b) (_
+	(@load a)
+	(@sub b)
+	(@store return)
+))
+
+(def + (a b) (_
+	(@load a)
+	(@add b)
+	(@store return)
+))
+
+(def / (a b) (_
+	(@load a)
+	(@div b)
+	(@store return)
+))
+
+(def * (a b) (_
+	(@load a)
+	(@mult b)
+	(@store return)
+))
+
+(def % (a b) (_
+	(@load (- a 
+			(* (/ a b) b)))
+	(@store return)
+))
+
+(def = (a b) (_
+	(@load b)
+	(@store *a)
+))
+
+(def not (x) (_
+	(= &return 1)
+	(if x 
+		(= &return 0)
+	)
+))
+
+(def < (a b) (_
+	(@load 1)
+	(@store return)
+	(ifngtz (- b a) (_
+		(@load 0)
+		(@store return)
+	))
+))
+
+(def <= (a b) (_
+	(= &return 0)
+	(ifngtz (- a b) 
+		(= &return 1)
+	)
+))
+
+(def main (x i) (_
+	(@read x)
+	(= &i 2)
+	(while (<= (* i i) x) (_
+		(while (not (% x i)) (_
+			(@write i)
+			(= &x (/ x i))
+		))
+		(= &i (+ i 1))
+	))
+	(if (- x 1)
+		(@write x)
+	)
+	
+))
+
+(main)
