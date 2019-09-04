@@ -4,5 +4,6 @@ TORAM is a language designed to be easy to compile to [Łukasz Szkup's version](
 ## USAGE
 
 `python3 run.py path/to/file.TORAM` to compile and interpret TORAM code
+
 `python3 run.py -c path/to/file.TORAM` to compile TORAM code and print the result (in RAM's language)
 
