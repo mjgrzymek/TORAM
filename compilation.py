@@ -36,7 +36,7 @@ def join(x, *args):
     return list(chain.from_iterable(codegen(son, *args).code for son in x))
 
 
-class args_type:
+class Args:
     def __init__(self, last_free, vard, fund):
         self.last_free = last_free
         self.vard = vard
@@ -48,15 +48,15 @@ class args_type:
         yield self.fund
 
     def __str__(self):
-        return 'args_type' + str((*self,))
+        return 'Args' + str((*self,))
 
     def str_no_fund(self):
-        return 'args_type' + str((self.last_free, self.vard, ...))
+        return 'Args' + str((self.last_free, self.vard, ...))
 
 
 def codegen(x, last_free=1, vard={'acc': 0}, fund={}):
     vard = deepcopy(vard)
-    args = args_type(last_free, vard, fund)
+    args = Args(last_free, vard, fund)
     del last_free
     code = []
     ret = None
@@ -81,7 +81,7 @@ def codegen(x, last_free=1, vard={'acc': 0}, fund={}):
     elif x[0] == 'def':
         fund[x[1]] = deepcopy(x)
 
-    elif x[0] in ('while', 'if', 'ifngtz'):  # (if|ifngtz ? (_ code))
+    elif x[0] in ('while', 'if', 'ifngtz'):
         name, condition, statement = x
         label_name = name + get_unique()
         compiled_condition = codegen(condition, *args)
@@ -104,10 +104,7 @@ def codegen(x, last_free=1, vard={'acc': 0}, fund={}):
                 [label_name + ':']
 
     else:  # function (name arg1 arg2) (def name (arg1 ... var1 ...) (_ ...))
-        try:
-            func = deepcopy(fund[x[0]])
-        except:
-            print(x)
+        func = deepcopy(fund[x[0]])
         _, _, argvars, func_code = func
         sent_vard = deepcopy(vard)  # need a copy to not override current names
 
@@ -123,7 +120,7 @@ def codegen(x, last_free=1, vard={'acc': 0}, fund={}):
                 if isinstance(argname, str):
                     sent_vard[argname] = str(args.last_free)
                     args.last_free += 1
-                else:
+                else: # a table
                     sent_vard[argname[0]] = str(args.last_free)
                     args.last_free += int(argname[1])
 
